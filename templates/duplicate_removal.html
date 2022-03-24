@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include "header.html" %}
+
+  <body>
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-3">
+          <h1 align="center">Remove duplicate articles</h1>
+      </div>
+    </div>
+    <div class="container"></div>
+      <div class="col-md-2"></div>
+      <div class="col-md-6">
+        <br>
+        <br>
+        <form action="{{ url_for('getunique') }}" method="POST" enctype = "multipart/form-data">
+          <div class="form-group row align-items-center">
+          <input type=file name=file>
+          <br>
+          <input type=submit class="btn btn-primary float-right" value="Remove Duplicates">
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
