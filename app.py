@@ -32,6 +32,8 @@ def getunique():
         if file and allowed_file(file.filename):
             path = remove_duplicates(file)
             return "Please find the output file in the path " + path
+    else:
+        return "Not a valid request"
 
 
 if __name__ == '__main__':
