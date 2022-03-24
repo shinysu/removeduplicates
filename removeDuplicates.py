@@ -7,7 +7,7 @@ def remove_duplicates(file):
     thismonth = df[['Article', 'Page count']]
     unique_data = thismonth.drop_duplicates()
     home = expanduser("~")
-    downloads_path = home + os.sep + "Downloads/"+ 'Unique_records.xlsx'
+    downloads_path = home + os.sep + 'Unique_records.xlsx'
     with pd.ExcelWriter(downloads_path) as writer: 
         unique_data.to_excel(writer, sheet_name='unique',index=False)
     return downloads_path
