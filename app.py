@@ -17,6 +17,7 @@ def index():
 
 @app.route('/getunique', methods=['GET', 'POST'])
 def getunique():
+    print("here")
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
@@ -34,4 +35,4 @@ def getunique():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
