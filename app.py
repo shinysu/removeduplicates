@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory
 from werkzeug.utils import secure_filename
-import pandas as pd
+from removeDuplicates import remove_duplicates
 
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(
@@ -9,7 +9,6 @@ UPLOAD_FOLDER = os.path.join(os.path.dirname(
 ALLOWED_EXTENSIONS = {'xlsx'}
 
 app = Flask(__name__, static_url_path="/static")
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 saved_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'unique.xlsx')
@@ -39,20 +38,11 @@ def index():
             new_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             os.rename(new_file, saved_filename)
             filename = 'unique.xlsx'
-            remove_duplicates(os.path.join(
-                app.config['UPLOAD_FOLDER'], filename), filename)
+            # remove_duplicates(os.path.join(
+            #     app.config['UPLOAD_FOLDER'], filename), filename)
+            remove_duplicates(UPLOAD_FOLDER, filename)
             return redirect(url_for('uploaded_file', filename=filename))
     return render_template('index.html')
-
-
-def remove_duplicates(path, filename):
-
-    df = pd.DataFrame(pd.read_excel(path))
-    thismonth = df[['Article', 'Page count']]
-    unique_data = thismonth.drop_duplicates()
-    downloads_path = os.path.join(UPLOAD_FOLDER, filename)
-    with pd.ExcelWriter(downloads_path) as writer:
-        unique_data.to_excel(writer, sheet_name='unique', index=False)
 
 
 @app.route('/upload/<filename>')
