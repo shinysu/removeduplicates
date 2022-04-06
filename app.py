@@ -37,7 +37,7 @@ def index():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             outputfile = 'duplicates_removed.xlsx'
-            remove_duplicates(UPLOAD_FOLDER, filename, outputfile)
+            remove_duplicates(UPLOAD_FOLDER, file, outputfile)
             
             return redirect(url_for('uploaded_file', outputfile=outputfile))
     return render_template('index.html')
