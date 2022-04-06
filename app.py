@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, url_for, render_template, send_from_directory
+from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory
 from werkzeug.utils import secure_filename
 from removeDuplicates import remove_duplicates
 
@@ -25,25 +25,27 @@ def index():
 
     if request.method == 'POST':
         if 'file' not in request.files:
-            print('No file attached in request')
+            flash('No file attached in request')
             return redirect(request.url)
         file = request.files['file']
         if file.filename == '':
-            print('No file selected')
+            flash('No file selected')
+            return redirect(request.url)
+        if not allowed_file(file.filename):
+            flash('Please choose a file with extension .xlsx')
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            new_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            os.rename(new_file, saved_filename)
-            remove_duplicates(UPLOAD_FOLDER)
-            return redirect(url_for('uploaded_file', filename=filename))
+            outputfile = 'duplicates_removed.xlsx'
+            remove_duplicates(UPLOAD_FOLDER, filename, outputfile)
+            
+            return redirect(url_for('uploaded_file', outputfile=outputfile))
     return render_template('index.html')
 
 
-@app.route('/upload/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+@app.route('/upload/<outputfile>')
+def uploaded_file(outputfile):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], outputfile, as_attachment=True)
 
 
 if __name__ == '__main__':
