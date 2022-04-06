@@ -32,15 +32,11 @@ def index():
             print('No file selected')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            print(file)
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             new_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             os.rename(new_file, saved_filename)
-            filename = 'unique.xlsx'
-            # remove_duplicates(os.path.join(
-            #     app.config['UPLOAD_FOLDER'], filename), filename)
-            remove_duplicates(UPLOAD_FOLDER, filename)
+            remove_duplicates(UPLOAD_FOLDER)
             return redirect(url_for('uploaded_file', filename=filename))
     return render_template('index.html')
 
