@@ -9,20 +9,33 @@ def write_to_excel(downloads_path, result, duplicates):
 
 def remove_duplicates(path, file, outputfile):
     downloads_path = os.path.join(path, outputfile)
-    df = pd.DataFrame(pd.read_excel(file))
-    print(df.shape[0])
-    thismonth = df[['Article', 'Page count']]
-    previous_article = df[['Article IDs from already invoiced']]
-    unique_data = thismonth.drop_duplicates()
-    duplicates = unique_data[unique_data.set_index('Article').index.isin(previous_article.set_index('Article IDs from already invoiced').index)]
-    print(duplicates)
-    #duplicates = unique_data.loc[unique_data['Article'].isin(previous_article['Article IDs from already invoiced'])]
-    print(duplicates.shape[0])
-    result = unique_data[~unique_data.set_index('Article').index.isin(previous_article.set_index('Article IDs from already invoiced').index)]
-    print(result.shape[0])
+    master_file = os.path.join(path, "invoiced_files.csv")
+    df1 = pd.DataFrame(pd.read_excel(file, sheet_name='Published kriyadocs articles'))
+    df2 = pd.DataFrame(pd.read_excel(file, sheet_name='Banked kriyadocs articles'))
+    df = pd.concat([df1, df2])
+    previous_article = pd.DataFrame(pd.read_csv(master_file))
+    unique_data = df.drop_duplicates()
+    duplicates = previous_article[previous_article.set_index('Article IDs from already invoiced').index.isin(unique_data.set_index('Article ID').index)]
+    result = unique_data[~unique_data.set_index('Article ID').index.isin(previous_article.set_index('Article IDs from already invoiced').index)]
     write_to_excel(downloads_path, result, duplicates)
+    return result
     
 
+def update_master_csv(path, unique, month):
+    date = convert_month(month)
+    master_file = os.path.join(path, "invoiced_files.csv")
+    previous_article = pd.DataFrame(pd.read_csv(master_file))
+    to_append = unique[['Article ID']]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+    to_append['Invoiced month'] = date
+    to_append = to_append.rename(columns={"Article ID":"Article IDs from already invoiced"})
+    final_data = pd.concat([previous_article, to_append])
+    print(final_data.tail(10))
+    final_data.to_csv("removeduplicates/invoiced_files.csv", index=False)
+    
+def convert_month(month):
+    year, month = month.split('-')
+    return month +'/' + year
+
 if __name__ == "__main__":
-    remove_duplicates('/home/shiny/Downloads/Feb 2022 Breakup Workout Excel.xlsx')
+    remove_duplicates('/home/shiny/Downloads/Invoice_March 2022_Artwork_and_K2.xlsx')
     print("Main Program is here.")

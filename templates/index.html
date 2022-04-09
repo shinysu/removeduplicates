@@ -14,15 +14,45 @@
       <div class="col-md-10">
         <br>
         <br>
+        <br>
         <form method="POST" enctype = "multipart/form-data">
-          <div class="form-group row align-items-center">
-          <input type=file name=file>
+          <div class="row">
+            <div class="col-md-3">
+              <input type=file name=file id="file">
+            </div>
+            <div class="col-md-6">
+              <label for="month">Invoiced month:</label>
+              <input type="month" id="month" name="month" required>
+            </div>
+          </div>
           <br>
-          <input type=submit class="btn btn-primary float-right" value="Remove Duplicates">
+          <br>
+          <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-1">
+            <input type=submit class="btn btn-primary float-right" name="duplicates" value="Remove Duplicates" onclick="check_file()">
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-1">
+            <input type=submit class="btn btn-primary float-left" name="master" value="Get Master File">
+            </div>
           </div>
         </form>
         <br>
       </div>
     </div>
+    <script>
+      const monthControl = document.querySelector('input[type="month"]');
+      const date= new Date()
+      const month=("0" + (date.getMonth() + 1)).slice(-2)
+      const year=date.getFullYear()
+      monthControl.value = `${year}-${month}`;
+    </script>
+    <script>
+      function check_file() {
+        var f = document.getElementById("file");
+        alert( ""==f.value ? "Please select a file" : "file selected");
+      }
+    </script>
   </body>
 </html>
