@@ -18,7 +18,7 @@
         <form method="POST" enctype = "multipart/form-data">
           <div class="row">
             <div class="col-md-3">
-              <input type=file name=file id="file">
+              <input type=file name=file id="file" onchange="file_selected = true;">
             </div>
             <div class="col-md-6">
               <label for="month">Invoiced month:</label>
@@ -30,7 +30,7 @@
           <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-1">
-            <input type=submit class="btn btn-primary float-right" name="duplicates" value="Remove Duplicates" onclick="check_file()">
+            <input type=submit class="btn btn-primary float-right" name="duplicates" value="Remove Duplicates" onclick='showNoFile();'>
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-1">
@@ -49,10 +49,10 @@
       monthControl.value = `${year}-${month}`;
     </script>
     <script>
-      function check_file() {
-        var f = document.getElementById("file");
-        alert( ""==f.value ? "Please select a file" : "file selected");
-      }
+      var file_selected = false;
+      function showNoFile() {
+        if(!file_selected) { alert('No file selected!'); }
+      }   
     </script>
   </body>
 </html>
